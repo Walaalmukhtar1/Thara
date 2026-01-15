@@ -1,4 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
+document.getElementById("reCustomizeBtn").addEventListener("click", () => {
+    currentQuestion = 1;               
+    updateQuestionnaireUI();            
+    questionnaireOverlay.classList.add('active'); 
+    document.body.style.overflow = 'hidden';   
+});
+
+    document.getElementById("saveBtn").addEventListener("click", () => {
+        const heading = document.getElementById('resultHeading').textContent;
+        localStorage.setItem('savedResult', heading);
+        alert("تم حفظ المحتوى!");
+    });
+
+
     // ==================== DATA ====================
     let userData = {
         totalScore: 0,
@@ -80,29 +94,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function showSection(sectionName) {
-        document.querySelectorAll('.section-page').forEach(section => {
-            section.style.display = 'none';
-        });
-        
-        if (sectionName === 'home') {
-            document.getElementById('homeSection').style.display = 'flex';
-        } else if (sectionName === 'quiz') {
-            document.getElementById('quizSection').style.display = 'flex';
-        } else if (sectionName === 'dashboard') {
-            document.getElementById('dashboardSection').style.display = 'block';
-        }
+    document.querySelectorAll('.section-page').forEach(section => {
+        section.style.display = 'none';
+    });
 
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('active');
-            if (link.dataset.section === sectionName) {
-                link.classList.add('active');
-            }
-        });
-
-        navLinks.classList.remove('active');
-        menuToggle.classList.remove('is-active');
-        window.scrollTo(0, 0);
+    if (sectionName === 'home') {
+        document.getElementById('homeSection').style.display = 'flex';
+    } else if (sectionName === 'quiz') {
+        document.getElementById('quizSection').style.display = 'flex';
+    } else if (sectionName === 'dashboard') {
+        document.getElementById('dashboardSection').style.display = 'block';
+    } else if (sectionName === 'result') {
+        document.getElementById('resultSection').style.display = 'block';
     }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.section === sectionName) {
+            link.classList.add('active');
+        }
+    });
+
+    window.scrollTo(0, 0);
+}
+
 
     // Nav link clicks
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -198,23 +213,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    questionnaireForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (!isCurrentQuestionAnswered()) return;
+questionnaireForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!isCurrentQuestionAnswered()) return;
 
-        const formData = new FormData(questionnaireForm);
-        console.log('User Preferences:', {
-            userType: formData.get('userType'),
-            interest: formData.get('interest'),
-            contentType: formData.get('contentType'),
-            region: formData.get('region')
-        });
+    const formData = new FormData(questionnaireForm);
 
-        alert('تم حفظ تفضيلاتك! سنصمم لك تجربة مميزة.');
-        closeQuestionnaireModal();
-        currentQuestion = 1;
-        updateQuestionnaireUI();
-    });
+    const userPreferences = {
+        userType: formData.get('userType'),
+        interest: formData.get('interest'),
+        contentType: formData.get('contentType'),
+        region: formData.get('region')
+    };
+
+    localStorage.setItem('tharaPreferences', JSON.stringify(userPreferences));
+
+    closeQuestionnaireModal();
+    showPersonalizedResults();
+    currentQuestion = 1;
+    updateQuestionnaireUI();
+});
+
 
     updateQuestionnaireUI();
 
@@ -259,32 +278,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1500);
         });
     });
+    
+function finishQuiz() {
+    document.getElementById('quizSection').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
 
-    function finishQuiz() {
-        document.getElementById('quizQuestions').style.display = 'none';
-        document.getElementById('quizResult').style.display = 'block';
-        document.getElementById('finalScore').textContent = quizScore;
+    const heading = document.getElementById('resultHeading');
 
-        userData.totalScore += quizScore;
-        userData.quizCount++;
-        userData.history.unshift({
-            title: 'كويز المنطقة الشرقية',
-            date: new Date().toLocaleDateString('ar-SA'),
-            score: quizScore
-        });
-
-        if (userData.history.length > 10) userData.history = userData.history.slice(0, 10);
-
-        let message = '';
-        if (quizScore === 5) message = 'ممتاز! أنت خبير في المنطقة الشرقية! 🌟';
-        else if (quizScore >= 3) message = 'جيد جداً! معلوماتك ممتازة! 👏';
-        else if (quizScore >= 1) message = 'حاول مرة أخرى لتحسين نتيجتك! 💪';
-        else message = 'لا تقلق، حاول مرة أخرى وستتحسن! 📚';
-        document.getElementById('resultMessage').textContent = message;
-
-        saveUserData();
+    if (quizScore >= 4) {
+        heading.textContent =
+            "باحث أكاديمي مهتم بالاقتصاد – المنطقة الشرقية – عرض كتابي";
+    } else {
+        heading.textContent =
+            "مستكشف ثقافي – المنطقة الشرقية – تجربة بصرية";
     }
 
+    userData.totalScore += quizScore;
+    userData.quizCount++;
+    userData.history.unshift({
+        title: 'كويز المنطقة الشرقية',
+        date: new Date().toLocaleDateString('ar-SA'),
+        score: quizScore
+    });
+
+    if (userData.history.length > 10) userData.history = userData.history.slice(0, 10);
+
+    saveUserData();
+}
     function resetQuiz() {
         quizScore = 0;
         currentQuizQuestion = 1;
@@ -395,4 +415,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize
     updateAllDisplays();
+
+
+
+
+function showPersonalizedResults() {
+    const translations = {
+    userType: {
+        tourist: "سائح",
+        citizen: "مواطن",
+        researcher: "باحت أكاديمي"
+    },
+    interest: {
+        economy: "الاقتصاد",
+        culture: "الثقافة",
+        history: "التاريخ",
+        traditions: "العادات والتقاليد",
+        tourism: "السياحة",
+        general: "الاستكشاف العام"
+    },
+    region: {
+        eastern: "المنطقة الشرقية",
+        western: "المنطقة الغربية",
+        central: "المنطقة الوسطى",
+        northern: "المنطقة الشمالية",
+        southern: "المنطقة الجنوبية",
+    },
+    contentType: {
+        audio: "صوتي",
+        text: "كتابي",
+        visual: "مرئي"
+    }
+};
+
+    const prefs = JSON.parse(localStorage.getItem('tharaPreferences'));
+    if (!prefs) return;
+
+    document.querySelectorAll('.section-page').forEach(s => s.style.display = 'none');
+    document.getElementById('resultSection').style.display = 'block';
+
+    const heading = document.getElementById('resultHeading');
+    heading.textContent = `${translations.userType[prefs.userType]} مهتم بـ ${translations.interest[prefs.interest]} – ${translations.region[prefs.region]} – ${translations.contentType[prefs.contentType]}`;
+}
+
 });
