@@ -1609,3 +1609,155 @@ body::before {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-color);
 }
+
+
+/* ==================== RESULT SECTION==================== */
+
+.result-section {
+    min-height: calc(100vh - 100px);
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    text-align: center; 
+    justify-content: center;
+}
+
+.result-container {
+    max-width: 900px;
+    width: 100%;
+     direction: ltr; 
+    text-align: center; 
+    
+}
+
+.result-title {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.result-subtitle {
+    text-align: center;
+    font-family: 'Tajawal', sans-serif;
+    color: var(--primary-color);
+    margin-bottom: 35px;
+    line-height: 1.8;
+}
+
+.result-card {
+    text-align: center;
+    background: linear-gradient(
+        145deg,
+        #f5e6c8 0%,
+        #dbc895 50%,
+        #c9b57a 100%
+    );
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+}
+
+.result-heading {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.4rem;
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+}
+
+.result-content {
+    display: grid;
+    text-align: center;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.content-block {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 25px 20px;
+    transition: all 0.3s ease;
+}
+
+.content-block:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(208, 147, 67, 0.2);
+}
+
+.content-block h3 {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 12px;
+}
+
+.content-block p,
+.content-block li {
+    list-style: none; 
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    line-height: 1.7;
+}
+
+.content-block a {
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+.map-frame {
+    width: 100%;
+    height: 220px;
+    border-radius: 15px;
+    border: none;
+}
+
+.result-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 35px;
+}
+
+.result-note {
+    text-align: center;
+    margin-top: 25px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+}
+
+
+#resultSection {
+    position: relative;
+    background-image: url('ruins-bg.png');
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    background-size: clamp(250px, 40vw, 500px); 
+    padding: 60px 20px; 
+    overflow: hidden;
+}
+
+.result-container {
+    position: relative;
+    z-index: 1; 
+}
+
+#resultSection::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1); 
+    z-index: 0;
+}
